@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition template="/WEB-INF/templates/page-layout.xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui">
+
+    <ui:param name="pageHeadline" value="${msg.contactEditHeadline}"/>
+
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam id="uuid" name="uuid" value="#{contactEditBean.uuid}"
+                         required="true"
+                         requiredMessage="${msg.contactEditUuidRequiredMessage}"/>
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="content">
+        <h:link outcome="contactlist" value="${msg.contactEditBackToList}"/>
+
+        <b:messages for="uuid"/>
+
+        <b:alert severity="info" rendered="${not contactEditBean.valid}">
+            <h:outputFormat value="${msg.contactEditContactNotFound}">
+                <f:param value="${contactEditBean.uuid}"/>
+            </h:outputFormat>
+        </b:alert>
+
+        <b:form id="contactEditForm" horizontal="true" rendered="${contactEditBean.valid}">
+            <b:alert severity="success" rendered="${contactEditBean.success}">
+                ${msg.contactEditSuccessMessage}
+            </b:alert>
+            <b:alert severity="danger" rendered="${contactEditBean.failure}">
+                ${msg.contactEditFailureMessage}<br/>
+                ${contactEditBean.failureMessage}
+            </b:alert>
+
+            <b:row>
+                <b:inputText span="6" label-col-md="2" id="name" label="${msg.contactNameLabel}" value="#{contactEditBean.contact.name}" required="true"/>
+                <b:message offset="2" span="6"/>
+            </b:row>
+
+            <b:row>
+                <b:inputText span="6"  label-col-md="2" id="phone" label="${msg.contactPhoneLabel}" value="#{contactEditBean.contact.phone}" required="true">
+                    <f:validateRegex pattern="([+])?[\d ]+"/>
+                </b:inputText>
+                <b:message offset="2" span="6"/>
+            </b:row>
+
+            <b:row class="topsep">
+                <!-- actionListener - method called during "invoke application" phase -->
+                <!-- missing action - stay on the same page -->
+                <b:commandButton id="storeButton"
+                                 offset="2" span="2" look="success" icon="check"
+                                 actionListener="#{contactEditBean.storeContact}"
+                                 value="${msg.contactEditStoreButtonLabel}"/>
+
+                <!-- actionListener - method called during "invoke application" phase -->
+                <!-- action - specifies the target page -->
+                <b:commandButton id="deleteButton"
+                                 rendered="${not contactEditBean.contact.new}"
+                                 span="2" look="danger" icon="trash"
+                                 immediate="true"
+                                 action="contactlist"
+                                 actionListener="#{contactEditBean.deleteContact}"
+                                 value="${msg.contactEditDeleteButtonLabel}"/>
+            </b:row>
+        </b:form>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition template="/WEB-INF/templates/page-layout.xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui">
+    <ui:param name="pageHeadline" value="${msg.contactListHeadline}"/>
+    <ui:define name="content">
+        <b:row>
+            <b:column span="12">
+                <h:link outcome="homepage" value="${msg.goToHomepage}"/>
+            </b:column>
+        </b:row>
+
+        <b:row>
+            <b:column offset="1" span="10">
+                <b:dataTable id="table" striped="true" var="contact" value="${contactListBean.contactList}">
+                    <b:dataTableColumn label="${msg.contactNameLabel}">
+                        <h:link outcome="edit" value="${contact.name}">
+                            <f:param name="uuid" value="${contact.uuid}"/>
+                        </h:link>
+                    </b:dataTableColumn>
+                    <b:dataTableColumn label="${msg.contactPhoneLabel}" value="${contact.phone}"/>
+                </b:dataTable>
+            </b:column>
+        </b:row>
+
+        <b:row>
+            <b:button id="createContactButton"
+                      offset="1" span="3" look="info" icon="plus-sign"
+                      outcome="edit"
+                      value="${msg.contactEditNew}">
+                <f:param name="uuid" value="new"/>
+            </b:button>
+            <b:form id="createTestDataForm">
+                <b:commandButton id="mailContactsButton"
+                                 span="3" look="default" icon="envelope"
+                                 actionListener="#{contactListBean.mailContacts}"
+                                 value="${msg.contactMailContacts}" ajax="true">
+                </b:commandButton>
+                <b:commandButton id="createTestDataButton" icon="th-list"
+                                 span="2"
+                                 actionListener="#{contactListBean.createTestData}"
+                                 value="${msg.contactListCreateTestdataButtonLabel}"  ajax="true" update="table">
+                </b:commandButton>
+            </b:form>
+        </b:row>
+
+    </ui:define>
+</ui:composition>
